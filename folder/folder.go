@@ -5,9 +5,12 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	// "time"
+	"strconv"
 )
 
+// Create a map that shows how many dates each month has.
+// The map is not used in any other places, since it is only purpose of reminder.
+// Do not inlcude this map in your program when you use this module.
 var monDate = map[string]int{
 	"1월":  31,
 	"2월":  29,
@@ -23,24 +26,29 @@ var monDate = map[string]int{
 	"12월": 31,
 }
 
-// Enter a month in a %d manner to decide date.
-// Enter a folder name in a Scanf manner.
-//
+// /Users/user/Desktop/고블록/출석
 
 func main() {
-	var monthNum int
-	result := monthDate(monthNum)
 
-	basepath := "./"
-	baseName := "testing1"
-	folderPath := filepath.Join(basepath, baseName)
+	// User enters a month to create folder.
+	var userMonth int
+	fmt.Println("폴더를 생성하고자 하는 월을 입력하세요:  ")
+	fmt.Scanln(&userMonth)
 
-	for i := 1; i < 13; i++ {
+	// monthDate function returns result variable and error.
+	result, _ := monthDate(userMonth)
 
-		// Depending on monthDate which user enters.
-		for j := 1; j <= result; j++ {
+	// if result == 0, print program finish message.
+	if result == 0 {
+		fmt.Println("프로그램을 종료합니다.")
 
-			// Check error for when the folder already has created.
+		// if result != 0, create folder.
+	} else {
+		for i := 1; i <= result; i++ {
+			basepath := "/Users/user/Desktop/고블록/출석/11월"
+			baseName := "2021년" + strconv.Itoa(userMonth) + "월" + strconv.Itoa(i) + "일"
+			folderPath := filepath.Join(basepath, baseName)
+
 			_, err := os.Stat("test")
 			if os.IsNotExist(err) {
 				err := os.Mkdir(folderPath, 0755)
@@ -49,44 +57,41 @@ func main() {
 				}
 			}
 		}
+		// Print folder generation complete message when done.
+		fmt.Printf("%d월 폴더 생성이 완료되었습니다.", userMonth)
 	}
-
 }
 
 // Enter a month to decide how many dates you create in a folder
-func monthDate(userMonth int) (result int) {
-	fmt.Scanln(&userMonth)
+func monthDate(userMonth int) (result int, err error) {
 	switch userMonth {
 	case 1:
-		return 31
+		return 31, nil
 	case 2:
-		return 28 // 윤달 처리는 하지 않는다.
+		return 28, nil // Ignore a leap month
 	case 3:
-		return 31
+		return 31, nil
 	case 4:
-		return 30
+		return 30, nil
 	case 5:
-		return 31
+		return 31, nil
 	case 6:
-		return 30
+		return 30, nil
 	case 7:
-		return 31
+		return 31, nil
 	case 8:
-		return 31
+		return 31, nil
 	case 9:
-		return 30
+		return 30, nil
 	case 10:
-		return 31
+		return 31, nil
 	case 11:
-		return 30
+		return 30, nil
 	case 12:
-		return 31
+		return 31, nil
+	default:
+		// Error handling when user enters invalid input data.
+		fmt.Println("올바르지 않은 입력입니다.")
+		return 0, err
 	}
-	return result
-}
-
-// Create a folder based on monthDate
-
-func createFolder() {
-
 }
